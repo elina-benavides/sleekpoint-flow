@@ -19,6 +19,7 @@ export function Topbar() {
         />
       </div>
       <div className="ml-auto flex items-center gap-1.5">
+        <ThemeToggle />
         <Button variant="ghost" size="icon" className="relative rounded-full text-muted-foreground">
           <Bell className="size-[1.05rem]" />
           <span className="absolute right-2 top-2 size-1.5 rounded-full bg-destructive" />
