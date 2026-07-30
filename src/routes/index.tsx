@@ -5,7 +5,7 @@ import {
   Plus,
   Minus,
   Trash2,
-  User,
+  
   CreditCard,
   Banknote,
   QrCode,
@@ -26,7 +26,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { categorias, money, productos, type Product } from "@/lib/pos-data";
+import { categorias, money, productos, type Cliente, type Product } from "@/lib/pos-data";
+import { CustomerPicker } from "@/components/pos/customer-picker";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/")({
@@ -57,6 +58,7 @@ function POSPage() {
     { producto: productos[0], cantidad: 2 },
     { producto: productos[4], cantidad: 1 },
   ]);
+  const [cliente, setCliente] = useState<Cliente | null>(null);
 
   const filtrados = useMemo(
     () =>
@@ -93,15 +95,16 @@ function POSPage() {
 
   const ticket = (
     <div className="flex h-full flex-col">
-      <div className="flex items-center justify-between px-5 pt-5">
-        <div>
+      <div className="flex items-center justify-between gap-3 px-5 pt-5">
+        <div className="min-w-0">
           <p className="font-display text-sm font-semibold">Ticket actual</p>
-          <p className="text-xs text-muted-foreground">#TKT-10483 · Caja 01</p>
+          <p className="truncate text-xs text-muted-foreground">
+            #TKT-10483 · Caja 01 · {cliente ? cliente.nombre : "Mostrador"}
+          </p>
         </div>
-        <Button variant="outline" size="sm" className="h-8 gap-1.5 rounded-lg text-xs">
-          <User className="size-3.5" /> Cliente
-        </Button>
+        <CustomerPicker cliente={cliente} onChange={setCliente} />
       </div>
+
 
       <ScrollArea className="mt-4 flex-1 px-5">
         {carrito.length === 0 ? (
@@ -192,6 +195,7 @@ function POSPage() {
             onClick={() => {
               toast.success("Venta completada", { description: money(total) });
               setCarrito([]);
+              setCliente(null);
             }}
           >
             Cobrar {money(total)}

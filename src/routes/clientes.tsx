@@ -17,7 +17,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { clientes, money } from "@/lib/pos-data";
+import { money } from "@/lib/pos-data";
+import { useClientes } from "@/lib/clientes-store";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/clientes")({
@@ -47,6 +48,7 @@ const nivelClass = {
 function ClientesPage() {
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
+  const clientes = useClientes();
   const lista = clientes.filter((c) => c.nombre.toLowerCase().includes(q.toLowerCase()));
 
   return (

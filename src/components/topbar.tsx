@@ -5,6 +5,7 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export function Topbar() {
   return (
@@ -18,6 +19,7 @@ export function Topbar() {
         />
       </div>
       <div className="ml-auto flex items-center gap-1.5">
+        <ThemeToggle />
         <Button variant="ghost" size="icon" className="relative rounded-full text-muted-foreground">
           <Bell className="size-[1.05rem]" />
           <span className="absolute right-2 top-2 size-1.5 rounded-full bg-destructive" />
