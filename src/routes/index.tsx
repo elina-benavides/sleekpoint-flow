@@ -26,7 +26,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { categorias, money, productos, type Product } from "@/lib/pos-data";
+import { categorias, money, productos, type Cliente, type Product } from "@/lib/pos-data";
+import { CustomerPicker } from "@/components/pos/customer-picker";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/")({
