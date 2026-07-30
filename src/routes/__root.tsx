@@ -15,6 +15,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
 import { AppSidebar } from "@/components/app-sidebar";
 import { Topbar } from "@/components/topbar";
+import { ThemeProvider, themeInitScript } from "@/components/theme-provider";
 
 
 function NotFoundComponent() {
