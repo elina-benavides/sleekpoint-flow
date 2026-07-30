@@ -195,6 +195,7 @@ function POSPage() {
             onClick={() => {
               toast.success("Venta completada", { description: money(total) });
               setCarrito([]);
+              setCliente(null);
             }}
           >
             Cobrar {money(total)}
