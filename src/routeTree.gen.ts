@@ -10,6 +10,9 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CajaRouteImport } from './routes/caja'
+import { Route as ClientesRouteImport } from './routes/clientes'
+import { Route as InventarioRouteImport } from './routes/inventario'
 import { Route as PanelRouteImport } from './routes/panel'
 import { Route as ProductosRouteImport } from './routes/productos'
 import { Route as VentasRouteImport } from './routes/ventas'
@@ -17,6 +20,21 @@ import { Route as VentasRouteImport } from './routes/ventas'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CajaRoute = CajaRouteImport.update({
+  id: '/caja',
+  path: '/caja',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClientesRoute = ClientesRouteImport.update({
+  id: '/clientes',
+  path: '/clientes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InventarioRoute = InventarioRouteImport.update({
+  id: '/inventario',
+  path: '/inventario',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PanelRoute = PanelRouteImport.update({
@@ -37,12 +55,18 @@ const VentasRoute = VentasRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/caja': typeof CajaRoute
+  '/clientes': typeof ClientesRoute
+  '/inventario': typeof InventarioRoute
   '/panel': typeof PanelRoute
   '/productos': typeof ProductosRoute
   '/ventas': typeof VentasRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/caja': typeof CajaRoute
+  '/clientes': typeof ClientesRoute
+  '/inventario': typeof InventarioRoute
   '/panel': typeof PanelRoute
   '/productos': typeof ProductosRoute
   '/ventas': typeof VentasRoute
@@ -50,20 +74,48 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/caja': typeof CajaRoute
+  '/clientes': typeof ClientesRoute
+  '/inventario': typeof InventarioRoute
   '/panel': typeof PanelRoute
   '/productos': typeof ProductosRoute
   '/ventas': typeof VentasRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/panel' | '/productos' | '/ventas'
+  fullPaths:
+    | '/'
+    | '/caja'
+    | '/clientes'
+    | '/inventario'
+    | '/panel'
+    | '/productos'
+    | '/ventas'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/panel' | '/productos' | '/ventas'
-  id: '__root__' | '/' | '/panel' | '/productos' | '/ventas'
+  to:
+    | '/'
+    | '/caja'
+    | '/clientes'
+    | '/inventario'
+    | '/panel'
+    | '/productos'
+    | '/ventas'
+  id:
+    | '__root__'
+    | '/'
+    | '/caja'
+    | '/clientes'
+    | '/inventario'
+    | '/panel'
+    | '/productos'
+    | '/ventas'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CajaRoute: typeof CajaRoute
+  ClientesRoute: typeof ClientesRoute
+  InventarioRoute: typeof InventarioRoute
   PanelRoute: typeof PanelRoute
   ProductosRoute: typeof ProductosRoute
   VentasRoute: typeof VentasRoute
@@ -76,6 +128,27 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/caja': {
+      id: '/caja'
+      path: '/caja'
+      fullPath: '/caja'
+      preLoaderRoute: typeof CajaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/clientes': {
+      id: '/clientes'
+      path: '/clientes'
+      fullPath: '/clientes'
+      preLoaderRoute: typeof ClientesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/inventario': {
+      id: '/inventario'
+      path: '/inventario'
+      fullPath: '/inventario'
+      preLoaderRoute: typeof InventarioRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/panel': {
@@ -104,6 +177,9 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CajaRoute: CajaRoute,
+  ClientesRoute: ClientesRoute,
+  InventarioRoute: InventarioRoute,
   PanelRoute: PanelRoute,
   ProductosRoute: ProductosRoute,
   VentasRoute: VentasRoute,
