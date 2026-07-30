@@ -58,6 +58,7 @@ function POSPage() {
     { producto: productos[0], cantidad: 2 },
     { producto: productos[4], cantidad: 1 },
   ]);
+  const [cliente, setCliente] = useState<Cliente | null>(null);
 
   const filtrados = useMemo(
     () =>
