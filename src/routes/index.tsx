@@ -5,7 +5,7 @@ import {
   Plus,
   Minus,
   Trash2,
-  User,
+  
   CreditCard,
   Banknote,
   QrCode,
