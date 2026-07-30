@@ -110,9 +110,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="es">
+    <html lang="es" suppressHydrationWarning>
       <head>
         <HeadContent />
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body>
         {children}
@@ -127,19 +128,21 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <SidebarProvider>
-        <div className="flex min-h-screen w-full bg-background">
-          <AppSidebar />
-          <div className="flex min-w-0 flex-1 flex-col">
-            <Topbar />
-            <main className="min-w-0 flex-1">
-              {/* Required: nested routes render here. */}
-              <Outlet />
-            </main>
+      <ThemeProvider>
+        <SidebarProvider>
+          <div className="flex min-h-screen w-full bg-background">
+            <AppSidebar />
+            <div className="flex min-w-0 flex-1 flex-col">
+              <Topbar />
+              <main className="min-w-0 flex-1">
+                {/* Required: nested routes render here. */}
+                <Outlet />
+              </main>
+            </div>
           </div>
-        </div>
-        <Toaster position="top-right" />
-      </SidebarProvider>
+          <Toaster position="top-right" />
+        </SidebarProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }
