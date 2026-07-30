@@ -93,15 +93,16 @@ function POSPage() {
 
   const ticket = (
     <div className="flex h-full flex-col">
-      <div className="flex items-center justify-between px-5 pt-5">
-        <div>
+      <div className="flex items-center justify-between gap-3 px-5 pt-5">
+        <div className="min-w-0">
           <p className="font-display text-sm font-semibold">Ticket actual</p>
-          <p className="text-xs text-muted-foreground">#TKT-10483 · Caja 01</p>
+          <p className="truncate text-xs text-muted-foreground">
+            #TKT-10483 · Caja 01 · {cliente ? cliente.nombre : "Mostrador"}
+          </p>
         </div>
-        <Button variant="outline" size="sm" className="h-8 gap-1.5 rounded-lg text-xs">
-          <User className="size-3.5" /> Cliente
-        </Button>
+        <CustomerPicker cliente={cliente} onChange={setCliente} />
       </div>
+
 
       <ScrollArea className="mt-4 flex-1 px-5">
         {carrito.length === 0 ? (
