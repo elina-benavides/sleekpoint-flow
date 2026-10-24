@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Store, Receipt, Printer, Percent, Save } from "lucide-react";
 import { toast } from "sonner";
+import { setBusinessType, useBusinessUI } from "@/lib/business-ui-store";
+import type { BusinessType } from "@/lib/product-location";
 
 import { PageHeader } from "@/components/topbar";
 import { Button } from "@/components/ui/button";
@@ -27,6 +29,8 @@ export const Route = createFileRoute("/configuracion")({
         content: "Ajustes del negocio, impuestos, tickets, impresoras y métodos de pago.",
       },
       { property: "og:title", content: "Configuración — Aurea POS" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       {
         property: "og:description",
         content: "Ajusta datos fiscales, impuestos, tickets e impresión.",
@@ -37,6 +41,7 @@ export const Route = createFileRoute("/configuracion")({
 });
 
 function ConfiguracionPage() {
+  const { businessType } = useBusinessUI();
   return (
     <div className="space-y-6 p-4 md:p-6">
       <PageHeader
@@ -68,6 +73,15 @@ function ConfiguracionPage() {
         <TabsContent value="negocio">
           <div className="panel space-y-5 p-6">
             <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="business-type">Tipo de negocio</Label>
+                <Select value={businessType} onValueChange={(value) => setBusinessType(value as BusinessType)}>
+                  <SelectTrigger id="business-type" className="rounded-xl"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {(["Tienda", "Ferretería", "Panadería"] as const).map((type) => <SelectItem key={type} value={type}>{type}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
               <Field label="Nombre comercial" value="Aurea Café & Panadería" />
               <Field label="RFC / Tax ID" value="AUR240715XY9" />
               <Field label="Teléfono" value="+52 55 4433 2211" />
