@@ -29,6 +29,9 @@ import {
 import { categorias, money, productos, type Cliente, type Product } from "@/lib/pos-data";
 import { CustomerPicker } from "@/components/pos/customer-picker";
 import { cn } from "@/lib/utils";
+import { useBusinessUI } from "@/lib/business-ui-store";
+import { supportsProductLocations } from "@/lib/product-location";
+import { ProductLocationControl } from "@/components/pos/product-location";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -40,6 +43,8 @@ export const Route = createFileRoute("/")({
           "Terminal de venta rápida: catálogo, carrito, descuentos y cobro en efectivo, tarjeta o transferencia.",
       },
       { property: "og:title", content: "Punto de venta — Aurea POS" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       {
         property: "og:description",
         content: "Terminal de venta rápida con catálogo, carrito y cobro multimétodo.",
@@ -52,6 +57,8 @@ export const Route = createFileRoute("/")({
 type Linea = { producto: Product; cantidad: number };
 
 function POSPage() {
+  const { businessType, locations } = useBusinessUI();
+  const showLocations = supportsProductLocations(businessType);
   const [categoria, setCategoria] = useState<string>("Todos");
   const [query, setQuery] = useState("");
   const [carrito, setCarrito] = useState<Linea[]>([
@@ -246,30 +253,28 @@ function POSPage() {
         <ScrollArea className="-mx-1 mt-4 flex-1 px-1">
           <div className="grid grid-cols-2 gap-3 pb-24 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
             {filtrados.map((p) => (
-              <button
-                key={p.id}
+              <div key={p.id} className={showLocations ? "panel group flex min-w-0 flex-col overflow-hidden transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[var(--shadow-lift)]" : "contents"}>
+              <Button
+                variant="ghost"
                 onClick={() => add(p)}
-                className="panel group flex flex-col items-start p-3 text-left transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[var(--shadow-lift)]"
+                className={cn("h-auto min-w-0 gap-0 whitespace-normal items-start flex-col p-3 text-left font-normal hover:bg-card", !showLocations && "panel group transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[var(--shadow-lift)]")}
               >
                 <div className="grid h-16 w-full place-items-center rounded-lg bg-surface text-3xl">
                   {p.emoji}
                 </div>
                 <p className="mt-2.5 line-clamp-1 text-sm font-medium">{p.nombre}</p>
                 <p className="text-[0.7rem] text-muted-foreground">{p.sku}</p>
-                <div className="mt-2 flex w-full items-center justify-between">
-                  <span className="numeric text-sm font-semibold text-primary">
-                    {money(p.precio)}
-                  </span>
-                  <span
-                    className={cn(
-                      "text-[0.7rem]",
-                      p.stock <= p.stockMin ? "text-destructive" : "text-muted-foreground",
-                    )}
-                  >
-                    {p.stock} u.
-                  </span>
-                </div>
-              </button>
+                {!showLocations && <div className="mt-2 flex w-full items-center justify-between">
+                  <span className="numeric text-sm font-semibold text-primary">{money(p.precio)}</span>
+                  <span className={cn("text-[0.7rem]", p.stock <= p.stockMin ? "text-destructive" : "text-muted-foreground")}>{p.stock} u.</span>
+                </div>}
+              </Button>
+              {showLocations && <ProductLocationControl product={p} location={locations[p.id]} />}
+              {showLocations ? <div className="flex w-full items-center justify-between px-3 pb-3 pt-1">
+                <span className="numeric text-sm font-semibold text-primary">{money(p.precio)}</span>
+                <span className={cn("text-[0.7rem]", p.stock <= p.stockMin ? "text-destructive" : "text-muted-foreground")}>{p.stock} u.</span>
+              </div> : null}
+              </div>
             ))}
           </div>
         </ScrollArea>
