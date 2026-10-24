@@ -264,12 +264,16 @@ function POSPage() {
                 </div>
                 <p className="mt-2.5 line-clamp-1 text-sm font-medium">{p.nombre}</p>
                 <p className="text-[0.7rem] text-muted-foreground">{p.sku}</p>
+                {!showLocations && <div className="mt-2 flex w-full items-center justify-between">
+                  <span className="numeric text-sm font-semibold text-primary">{money(p.precio)}</span>
+                  <span className={cn("text-[0.7rem]", p.stock <= p.stockMin ? "text-destructive" : "text-muted-foreground")}>{p.stock} u.</span>
+                </div>}
               </Button>
               {showLocations && <ProductLocationControl product={p} location={locations[p.id]} />}
               {showLocations ? <div className="flex w-full items-center justify-between px-3 pb-3 pt-1">
                 <span className="numeric text-sm font-semibold text-primary">{money(p.precio)}</span>
                 <span className={cn("text-[0.7rem]", p.stock <= p.stockMin ? "text-destructive" : "text-muted-foreground")}>{p.stock} u.</span>
-              </div> : <Button variant="ghost" onClick={() => add(p)} aria-label={`Agregar ${p.nombre}`} className="hidden" />}
+              </div> : null}
               </div>
             ))}
           </div>
