@@ -26,6 +26,8 @@ export const Route = createFileRoute("/usuarios")({
         content: "Gestión del equipo, roles, turnos y permisos de acceso al punto de venta.",
       },
       { property: "og:title", content: "Usuarios y permisos — Aurea POS" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       {
         property: "og:description",
         content: "Administra roles, turnos y permisos del equipo de la tienda.",

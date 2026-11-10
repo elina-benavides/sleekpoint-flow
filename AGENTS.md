@@ -11,3 +11,4 @@
 
 - Business-specific presentation is gated through `supportsProductLocations`; keep location formatting in a browser-safe domain module so other business types remain unchanged.
 - Business selection and location edits currently use a reactive session-only UI store; do not imply persistence or introduce backend storage without expanding the requested frontend scope.
+- Inventory uses pure validation rules and a shared reactive session store; forms review immutable stock snapshots and corrections append inverse movements so the UI stays consistent without implying backend persistence.

@@ -1,0 +1,37 @@
+import { useState } from "react";
+import { ArrowDownLeft, ArrowUpRight, ClipboardCheck, Eye, History, Search, Undo2 } from "lucide-react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useInventory, reverseMovement } from "@/lib/inventory-store";
+import { prepareReversal, type InventoryMovement } from "@/lib/inventory";
+import { cn } from "@/lib/utils";
+
+const dateLabel = (date: string) => new Date(date).toLocaleString("es-EC", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
+const icons = { Entrada: ArrowDownLeft, Salida: ArrowUpRight, Conteo: ClipboardCheck, Reverso: Undo2 };
+
+export function MovementHistory() {
+  const { movements, products } = useInventory();
+  const [query, setQuery] = useState("");
+  const [kind, setKind] = useState("Todos");
+  const [selected, setSelected] = useState<InventoryMovement | null>(null);
+  const [reversing, setReversing] = useState(false);
+  const [reason, setReason] = useState("");
+  const [error, setError] = useState("");
+  const filtered = movements.filter((m) => (kind === "Todos" || m.kind === kind) && `${m.id} ${m.reason} ${m.reference} ${m.changes.map((c) => products.find((p) => p.id === c.productId)?.nombre).join(" ")}`.toLowerCase().includes(query.toLowerCase()));
+  const reversed = selected && movements.some((m) => m.reverses === selected.id);
+  const close = () => { setSelected(null); setReversing(false); setReason(""); setError(""); };
+  const reverse = () => {
+    if (!selected) return;
+    try { reverseMovement(selected.id, reason.trim()); toast.success("Movimiento revertido", { description: "Se registró la corrección en el historial." }); close(); }
+    catch (e) { setError(e instanceof Error ? e.message : "No se pudo revertir."); }
+  };
+  return <div className="space-y-4">
+    <div className="flex flex-col gap-3 sm:flex-row"><div className="relative flex-1 sm:max-w-sm"><Search className="absolute left-3 top-3 size-4 text-muted-foreground" /><Input aria-label="Buscar movimiento" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Buscar movimiento o producto…" className="h-10 bg-card pl-9" /></div><Select value={kind} onValueChange={setKind}><SelectTrigger aria-label="Tipo de movimiento" className="w-full bg-card sm:w-44"><SelectValue /></SelectTrigger><SelectContent>{["Todos", "Entrada", "Salida", "Conteo", "Reverso"].map((k) => <SelectItem key={k} value={k}>{k === "Todos" ? "Todos los movimientos" : k}</SelectItem>)}</SelectContent></Select></div>
+    {filtered.length ? <div className="panel divide-y overflow-hidden">{filtered.map((m) => { const Icon = icons[m.kind]; const isReversed = movements.some((r) => r.reverses === m.id); return <div key={m.id} className="flex items-center gap-3 p-4"><span className={cn("grid size-10 shrink-0 place-items-center rounded-lg", m.kind === "Entrada" ? "bg-success/10 text-success" : m.kind === "Salida" ? "bg-destructive/10 text-destructive" : "bg-surface text-muted-foreground")}><Icon className="size-5" /></span><div className="min-w-0 flex-1"><p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm font-semibold">{m.kind}<span className="numeric text-xs font-normal text-muted-foreground">{m.id}</span>{isReversed && <span className="text-xs font-normal text-muted-foreground">Revertido</span>}</p><p className="truncate text-xs text-muted-foreground">{m.reason} · {m.changes.length} productos</p><p className="mt-1 text-xs text-muted-foreground">{dateLabel(m.date)}</p></div><Button variant="ghost" size="icon" aria-label={`Ver ${m.id}`} title="Ver detalle" onClick={() => setSelected(m)}><Eye className="size-4" /></Button></div>; })}</div> : <div className="flex flex-col items-center gap-2 py-16 text-center"><History className="mb-2 size-8 text-muted-foreground/50" /><h3 className="text-sm font-semibold">{movements.length ? "Sin coincidencias" : "Aún no hay movimientos"}</h3><p className="text-sm text-muted-foreground">{movements.length ? "Prueba con otro producto o motivo." : "Los movimientos de esta sesión aparecerán aquí."}</p></div>}
+    <Dialog open={Boolean(selected)} onOpenChange={(open) => { if (!open) close(); }}><DialogContent className="max-h-[90dvh] w-[calc(100%-1rem)] overflow-y-auto rounded-xl sm:max-w-xl">{selected && <><DialogHeader className="text-left"><DialogTitle>{reversing ? "Revertir movimiento" : `${selected.kind} · ${selected.id}`}</DialogTitle><DialogDescription>{dateLabel(selected.date)} · {selected.actor}</DialogDescription></DialogHeader><div className="space-y-2 text-sm"><p><span className="text-muted-foreground">Motivo: </span>{selected.reason}</p>{selected.reference && <p className="break-words"><span className="text-muted-foreground">Referencia: </span>{selected.reference}</p>}{selected.note && <p className="break-words text-muted-foreground">{selected.note}</p>}</div><div className="divide-y border-y">{selected.changes.map((c) => { const product = products.find((p) => p.id === c.productId); return <div key={c.productId} className="flex items-center gap-3 py-3 text-sm"><span className="min-w-0 flex-1 font-medium">{product?.nombre}</span><span className="numeric shrink-0 text-muted-foreground">{c.before} → {c.after}</span><span className={cn("numeric w-14 shrink-0 text-right", c.delta < 0 ? "text-destructive" : "text-success")}>{c.delta > 0 ? "+" : ""}{c.delta}</span></div>; })}</div>{reversing ? <><div className="space-y-2"><Label htmlFor="reverse-reason">Motivo de la corrección</Label><Input id="reverse-reason" value={reason} onChange={(e) => setReason(e.target.value)} maxLength={250} /><p className="text-xs text-muted-foreground">Se aplicará el movimiento inverso a las existencias actuales. El registro original se conserva.</p></div><div className="divide-y">{selected.changes.map((c) => { const p = products.find((p) => p.id === c.productId); return <div key={c.productId} className="flex justify-between gap-3 py-2 text-sm"><span className="min-w-0">{p?.nombre}</span><span className="numeric shrink-0">{p?.stock} → {Math.round(((p?.stock ?? 0) - c.delta) * 1000) / 1000}</span></div>; })}</div><div className="flex justify-between gap-2"><Button variant="outline" onClick={() => setReversing(false)}>Volver</Button><Button disabled={!reason.trim()} onClick={reverse} className="gap-2"><Undo2 className="size-4" />Confirmar reverso</Button></div></> : selected.kind !== "Reverso" && !reversed ? <Button variant="outline" className="gap-2" onClick={() => { try { prepareReversal(products, selected); setReversing(true); setError(""); } catch (e) { setError(e instanceof Error ? e.message : "No se puede revertir."); } }}><Undo2 className="size-4" />Revertir movimiento</Button> : <p className="text-sm text-muted-foreground">{reversed ? "Movimiento revertido; el historial conserva ambos registros." : `Corrección de ${selected.reverses}`}</p>}{error && <p role="alert" className="text-sm text-destructive">{error}</p>}</>}</DialogContent></Dialog>
+  </div>;
+}

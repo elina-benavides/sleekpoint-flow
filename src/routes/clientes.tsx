@@ -30,6 +30,8 @@ export const Route = createFileRoute("/clientes")({
         content: "Directorio de clientes con historial de compras, gasto acumulado y nivel de fidelidad.",
       },
       { property: "og:title", content: "Clientes y fidelidad — Aurea POS" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       {
         property: "og:description",
         content: "Directorio con historial de compras y niveles de fidelidad.",

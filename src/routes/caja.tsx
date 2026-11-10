@@ -20,6 +20,8 @@ export const Route = createFileRoute("/caja")({
         content: "Apertura, movimientos, arqueo y cierre de caja por turno.",
       },
       { property: "og:title", content: "Control de caja — Aurea POS" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       {
         property: "og:description",
         content: "Gestiona apertura, retiros, arqueo y cierre de turno.",

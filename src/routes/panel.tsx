@@ -34,6 +34,8 @@ export const Route = createFileRoute("/panel")({
         content: "Métricas del día: ventas, tickets, ticket promedio y productos más vendidos.",
       },
       { property: "og:title", content: "Panel de control — Aurea POS" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       {
         property: "og:description",
         content: "Métricas en vivo de ventas, tickets y desempeño de la sucursal.",

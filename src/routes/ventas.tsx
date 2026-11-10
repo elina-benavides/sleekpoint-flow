@@ -35,6 +35,8 @@ export const Route = createFileRoute("/ventas")({
         content: "Historial de ventas con filtros por estado, método de pago y detalle del ticket.",
       },
       { property: "og:title", content: "Ventas y tickets — Aurea POS" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       {
         property: "og:description",
         content: "Consulta, filtra y revisa el detalle de cada ticket emitido.",

@@ -32,6 +32,7 @@ import { cn } from "@/lib/utils";
 import { useBusinessUI } from "@/lib/business-ui-store";
 import { supportsProductLocations } from "@/lib/product-location";
 import { ProductLocationControl } from "@/components/pos/product-location";
+import { useInventory } from "@/lib/inventory-store";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -57,6 +58,7 @@ export const Route = createFileRoute("/")({
 type Linea = { producto: Product; cantidad: number };
 
 function POSPage() {
+  const { products: productos } = useInventory();
   const { businessType, locations } = useBusinessUI();
   const showLocations = supportsProductLocations(businessType);
   const [categoria, setCategoria] = useState<string>("Todos");
@@ -75,7 +77,7 @@ function POSPage() {
           (p.nombre.toLowerCase().includes(query.toLowerCase()) ||
             p.sku.toLowerCase().includes(query.toLowerCase())),
       ),
-    [categoria, query],
+    [categoria, query, productos],
   );
 
   const add = (producto: Product) =>

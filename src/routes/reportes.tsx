@@ -31,6 +31,8 @@ export const Route = createFileRoute("/reportes")({
         content: "Analítica de ventas, mix de categorías, márgenes y rendimiento por producto.",
       },
       { property: "og:title", content: "Reportes y analítica — Aurea POS" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       {
         property: "og:description",
         content: "Analítica de ventas, márgenes y mix de categorías.",
