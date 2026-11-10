@@ -32,7 +32,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { categorias, money, productos } from "@/lib/pos-data";
+import { categorias, money } from "@/lib/pos-data";
+import { useInventory } from "@/lib/inventory-store";
 
 export const Route = createFileRoute("/productos")({
   head: () => ({
@@ -43,6 +44,8 @@ export const Route = createFileRoute("/productos")({
         content: "Administra productos, precios, costos, categorías y márgenes del catálogo.",
       },
       { property: "og:title", content: "Catálogo de productos — Aurea POS" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       {
         property: "og:description",
         content: "Alta, edición y control de precios y márgenes de todo el catálogo.",
@@ -53,6 +56,7 @@ export const Route = createFileRoute("/productos")({
 });
 
 function ProductosPage() {
+  const { products: productos } = useInventory();
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
   const lista = productos.filter(
